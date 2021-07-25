@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { IProduct } from "../Products";
 import {
   Card,
   CardActions,
@@ -10,6 +9,7 @@ import {
 } from "@material-ui/core";
 import { AddShoppingCart } from "@material-ui/icons";
 import useStyles from "./productStyles";
+import { Product as IProduct } from "@chec/commerce.js/types/product";
 
 interface Props {
   product: IProduct;
@@ -17,21 +17,23 @@ interface Props {
 
 const Product: FC<Props> = ({ product }) => {
   const classes = useStyles();
-  const { name, description, price, image } = product;
+  const { name, description, price, media } = product;
 
   return (
     <Card className={classes.root}>
-      <CardMedia className={classes.media} image={image} title={name} />
+      <CardMedia className={classes.media} image={media.source} title={name} />
       <CardContent>
         <div className={classes.cardContent}>
           <Typography variant="h5" gutterBottom>
             {name}
           </Typography>
-          <Typography variant="h5">{price}</Typography>
+          <Typography variant="h5">{price.formatted_with_symbol}</Typography>
         </div>
-        <Typography variant="body2" color="textSecondary">
-          {description}
-        </Typography>
+        <Typography
+          dangerouslySetInnerHTML={{ __html: description }}
+          variant="body2"
+          color="textSecondary"
+        />
       </CardContent>
       <CardActions disableSpacing className={classes.cardActions}>
         <IconButton aria-label="Add to Cart">
