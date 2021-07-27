@@ -3,6 +3,7 @@ import { commerce } from "./lib/commerce";
 import { Cart, Navbar, Products } from "./components";
 import { Product } from "@chec/commerce.js/types/product";
 import { Cart as ICart } from "@chec/commerce.js/types/cart";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 const App = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -30,11 +31,19 @@ const App = () => {
   console.log(cart);
 
   return (
-    <>
-      <Navbar totalItems={cart && cart.total_items} />
-      {/* <Products products={products} onAddToCart={handleAddToCart} /> */}
-      <Cart cart={cart} />
-    </>
+    <BrowserRouter>
+      <>
+        <Navbar totalItems={cart && cart.total_items} />
+        <Switch>
+          <Route exact path="/">
+            <Products products={products} onAddToCart={handleAddToCart} />
+          </Route>
+          <Route exact path="/cart">
+            <Cart cart={cart} />
+          </Route>
+        </Switch>
+      </>
+    </BrowserRouter>
   );
 };
 

@@ -7,6 +7,7 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import { FC } from "react";
+import { Link } from "react-router-dom";
 import CartItem from "./CartItem/CartItem";
 
 import useStyles from "./cartStyles";
@@ -20,7 +21,11 @@ const Cart: FC<Props> = ({ cart }) => {
 
   const EmptyCart = () => (
     <Typography variant="subtitle1">
-      You have no items in your shopping cart, start adding some!
+      You have no items in your shopping cart,&nbsp;
+      <Link to="/" className={classes.link}>
+        start adding some
+      </Link>
+      !
     </Typography>
   );
 
