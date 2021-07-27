@@ -13,11 +13,12 @@ import { Product as IProduct } from "@chec/commerce.js/types/product";
 
 interface Props {
   product: IProduct;
+  onAddToCart: (productId: string, quantity: number) => void;
 }
 
-const Product: FC<Props> = ({ product }) => {
+const Product: FC<Props> = ({ product, onAddToCart }) => {
   const classes = useStyles();
-  const { name, description, price, media } = product;
+  const { id, name, description, price, media } = product;
 
   return (
     <Card className={classes.root}>
@@ -36,7 +37,7 @@ const Product: FC<Props> = ({ product }) => {
         />
       </CardContent>
       <CardActions disableSpacing className={classes.cardActions}>
-        <IconButton aria-label="Add to Cart">
+        <IconButton aria-label="Add to Cart" onClick={() => onAddToCart(id, 1)}>
           <AddShoppingCart />
         </IconButton>
       </CardActions>
