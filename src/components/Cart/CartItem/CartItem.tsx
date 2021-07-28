@@ -7,17 +7,23 @@ import {
   CardMedia,
   Typography,
 } from "@material-ui/core";
-import React, { FC } from "react";
+import { FC } from "react";
 
 import useStyles from "./cartItemStyles";
 
 interface Props {
   item: LineItem;
+  handleRemoveFromCart: (productId: string) => void;
+  handleUpdateCartQuantity: (productId: string, quantity: number) => void;
 }
 
-const CartItem: FC<Props> = ({ item }) => {
+const CartItem: FC<Props> = ({
+  item,
+  handleRemoveFromCart,
+  handleUpdateCartQuantity,
+}) => {
   const classes = useStyles();
-  const { media, name, line_total, quantity } = item;
+  const { id, media, name, line_total, quantity } = item;
 
   return (
     <Card>
@@ -33,15 +39,28 @@ const CartItem: FC<Props> = ({ item }) => {
       </CardContent>
       <CardActions className={classes.cardActions}>
         <div className={classes.buttons}>
-          <Button type="button" size="small">
+          <Button
+            type="button"
+            size="small"
+            onClick={() => handleUpdateCartQuantity(id, quantity - 1)}
+          >
             -
           </Button>
           <Typography>{quantity}</Typography>
-          <Button type="button" size="small">
+          <Button
+            type="button"
+            size="small"
+            onClick={() => handleUpdateCartQuantity(id, quantity + 1)}
+          >
             +
           </Button>
         </div>
-        <Button variant="contained" type="button" color="secondary">
+        <Button
+          variant="contained"
+          type="button"
+          color="secondary"
+          onClick={() => handleRemoveFromCart(id)}
+        >
           Remove
         </Button>
       </CardActions>
