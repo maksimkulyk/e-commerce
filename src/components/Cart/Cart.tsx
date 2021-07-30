@@ -67,6 +67,8 @@ const Cart: FC<Props> = ({
             Empty cart
           </Button>
           <Button
+            component={Link}
+            to="/checkout"
             className={classes.checkoutButton}
             size="large"
             type="button"
