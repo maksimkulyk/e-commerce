@@ -13,7 +13,7 @@ import CartItem from "./CartItem/CartItem";
 import useStyles from "./cartStyles";
 
 interface Props {
-  cart: ICart | undefined;
+  cart: ICart;
   handleUpdateCartQuantity: (productId: string, quantity: number) => void;
   handleRemoveFromCart: (productId: string) => void;
   handleEmptyCart: () => void;
@@ -40,7 +40,7 @@ const Cart: FC<Props> = ({
   const FilledCart = () => (
     <>
       <Grid container spacing={3}>
-        {cart?.line_items.map((item) => (
+        {cart.line_items.map((item) => (
           <Grid item xs={12} sm={4} key={item.id}>
             <CartItem
               item={item}
@@ -53,7 +53,7 @@ const Cart: FC<Props> = ({
       </Grid>
       <div className={classes.cardDetails}>
         <Typography variant="h4">
-          Subtotal: {cart?.subtotal.formatted_with_symbol}
+          Subtotal: {cart.subtotal.formatted_with_symbol}
         </Typography>
         <div>
           <Button
@@ -82,7 +82,7 @@ const Cart: FC<Props> = ({
     </>
   );
 
-  if (!cart?.line_items)
+  if (!cart.line_items)
     return (
       <div className={classes.loader}>
         <CircularProgress />

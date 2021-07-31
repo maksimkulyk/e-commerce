@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
-import { commerce } from "./lib/commerce";
-import { Cart, Checkout, Navbar, Products } from "./components";
-import { Product } from "@chec/commerce.js/types/product";
-import { Cart as ICart } from "@chec/commerce.js/types/cart";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { commerce } from "./lib/commerce";
+import { Cart as ICart } from "@chec/commerce.js/types/cart";
+import { Product } from "@chec/commerce.js/types/product";
+import { Cart, Checkout, Navbar, Products } from "./components";
+import { CheckoutCapture } from "@chec/commerce.js/types/checkout-capture";
+import { CheckoutCaptureResponse } from "@chec/commerce.js/types/checkout-capture-response";
 
 const App = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [cart, setCart] = useState<ICart>();
+  const [cart, setCart] = useState<ICart>({} as ICart);
+  const [order, setOrder] = useState<CheckoutCaptureResponse>(
+    {} as CheckoutCaptureResponse
+  );
+  const [errorMessage, setErrorMessage] = useState("");
 
   const fetchProducts = async () => {
     const { data } = await commerce.products.list();
@@ -15,7 +21,8 @@ const App = () => {
   };
 
   const fetchCart = async () => {
-    setCart(await commerce.cart.retrieve());
+    const cart = await commerce.cart.retrieve();
+    if (cart) setCart(cart);
   };
 
   const handleAddToCart = async (productId: string, quantity: number) => {
@@ -33,12 +40,35 @@ const App = () => {
 
   const handleRemoveFromCart = async (productId: string) => {
     const { cart } = await commerce.cart.remove(productId);
-    setCart(cart);
+    cart && setCart(cart);
   };
 
   const handleEmptyCart = async () => {
     const { cart } = await commerce.cart.empty();
     setCart(cart);
+  };
+
+  const refreshCart = async () => {
+    const newCart = await commerce.cart.refresh();
+
+    setCart(newCart);
+  };
+
+  const handleCaptureCheckout = async (
+    checkoutTokenId: string,
+    newOrder: CheckoutCapture
+  ) => {
+    try {
+      const incomingOrder = await commerce.checkout.capture(
+        checkoutTokenId,
+        newOrder
+      );
+
+      setOrder(incomingOrder);
+      refreshCart();
+    } catch (error) {
+      setErrorMessage(error.data.error.message);
+    }
   };
 
   useEffect(() => {
@@ -49,7 +79,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <>
-        <Navbar totalItems={cart && cart.total_items} />
+        <Navbar totalItems={cart.total_items} />
         <Switch>
           <Route exact path="/">
             <Products products={products} onAddToCart={handleAddToCart} />
@@ -63,7 +93,12 @@ const App = () => {
             />
           </Route>
           <Route exact path="/checkout">
-            <Checkout />
+            <Checkout
+              cart={cart}
+              order={order}
+              onCaptureCheckout={handleCaptureCheckout}
+              error={errorMessage}
+            />
           </Route>
         </Switch>
       </>

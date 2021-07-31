@@ -5,10 +5,9 @@ import { useFormContext, Controller } from "react-hook-form";
 interface Props {
   name: string;
   label: string;
-  required: boolean | undefined;
 }
 
-const FormInput: FC<Props> = ({ name, label, required }) => {
+const FormInput: FC<Props> = ({ name, label }) => {
   const { control } = useFormContext();
 
   return (
@@ -17,7 +16,7 @@ const FormInput: FC<Props> = ({ name, label, required }) => {
         control={control}
         name={name}
         render={({ field }) => (
-          <TextField {...field} fullWidth label={label} required={required} />
+          <TextField {...field} fullWidth label={label} required />
         )}
       />
     </Grid>
