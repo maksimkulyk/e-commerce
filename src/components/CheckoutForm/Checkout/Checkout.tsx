@@ -1,8 +1,9 @@
 import { FC, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import {
   Button,
   CircularProgress,
+  CssBaseline,
   Divider,
   Paper,
   Step,
@@ -19,6 +20,7 @@ import { ShippingData } from "../../../types";
 import { CheckoutCaptureResponse } from "@chec/commerce.js/types/checkout-capture-response";
 import { CheckoutCapture } from "@chec/commerce.js/types/checkout-capture";
 import useStyles from "../checkoutStyles";
+import { time } from "console";
 
 interface Props {
   cart: ICart;
@@ -35,7 +37,9 @@ const Checkout: FC<Props> = ({ cart, order, onCaptureCheckout, error }) => {
   const [checkoutToken, setCheckoutToken] = useState<CheckoutToken>(
     {} as CheckoutToken
   );
+  const [isFinished, setIsFinished] = useState(false);
   const classes = useStyles();
+  const history = useHistory();
 
   useEffect(() => {
     const generateToken = async () => {
@@ -46,11 +50,12 @@ const Checkout: FC<Props> = ({ cart, order, onCaptureCheckout, error }) => {
 
         setCheckoutToken(token);
       } catch (error) {
-        console.log(error);
+        history.push("/");
       }
     };
 
     if (cart.id) generateToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart.id]);
 
   const nextStep = () => setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -59,6 +64,12 @@ const Checkout: FC<Props> = ({ cart, order, onCaptureCheckout, error }) => {
   const next = (data: ShippingData) => {
     setShippingData(data);
     nextStep();
+  };
+
+  const timeout = () => {
+    setTimeout(() => {
+      setIsFinished(true);
+    }, 3000);
   };
 
   let Confirmation = () =>
@@ -73,6 +84,16 @@ const Checkout: FC<Props> = ({ cart, order, onCaptureCheckout, error }) => {
           <Typography variant="subtitle2">
             Order ref: {order.customer_reference}
           </Typography>
+        </div>
+        <Button component={Link} to="/" variant="outlined" type="button">
+          Back to Home
+        </Button>
+      </>
+    ) : isFinished ? (
+      <>
+        <div>
+          <Typography variant="h5">Thank you for your purchase!</Typography>
+          <Divider className={classes.divider} />
         </div>
         <Button component={Link} to="/" variant="outlined" type="button">
           Back to Home
@@ -104,11 +125,13 @@ const Checkout: FC<Props> = ({ cart, order, onCaptureCheckout, error }) => {
         backStep={backStep}
         shippingData={shippingData}
         onCaptureCheckout={onCaptureCheckout}
+        timeout={timeout}
       />
     );
 
   return (
     <>
+      <CssBaseline />
       <div className={classes.toolbar} />
       <main className={classes.layout}>
         <Paper className={classes.paper}>

@@ -20,6 +20,7 @@ interface Props {
     checkoutTokenId: string,
     newOrder: CheckoutCapture
   ) => void;
+  timeout: () => void;
 }
 
 const stripePromise = loadStripe(
@@ -32,6 +33,7 @@ const PaymentForm: FC<Props> = ({
   nextStep,
   backStep,
   onCaptureCheckout,
+  timeout,
 }) => {
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>,
@@ -79,6 +81,7 @@ const PaymentForm: FC<Props> = ({
         };
 
         onCaptureCheckout(checkoutToken.id, orderData);
+        timeout();
         nextStep();
       }
     }
