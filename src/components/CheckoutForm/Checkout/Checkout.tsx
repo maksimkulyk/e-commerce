@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Button,
   CircularProgress,
@@ -20,7 +20,6 @@ import { ShippingData } from "../../../types";
 import { CheckoutCaptureResponse } from "@chec/commerce.js/types/checkout-capture-response";
 import { CheckoutCapture } from "@chec/commerce.js/types/checkout-capture";
 import useStyles from "../checkoutStyles";
-import { time } from "console";
 
 interface Props {
   cart: ICart;
@@ -39,7 +38,6 @@ const Checkout: FC<Props> = ({ cart, order, onCaptureCheckout, error }) => {
   );
   const [isFinished, setIsFinished] = useState(false);
   const classes = useStyles();
-  const history = useHistory();
 
   useEffect(() => {
     const generateToken = async () => {
@@ -50,11 +48,11 @@ const Checkout: FC<Props> = ({ cart, order, onCaptureCheckout, error }) => {
 
         setCheckoutToken(token);
       } catch (error) {
-        history.push("/");
+        console.log(error);
       }
     };
 
-    if (cart.id) generateToken();
+    if (cart.id && cart.total_items) generateToken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart.id]);
 
@@ -84,6 +82,7 @@ const Checkout: FC<Props> = ({ cart, order, onCaptureCheckout, error }) => {
           <Typography variant="subtitle2">
             Order ref: {order.customer_reference}
           </Typography>
+          <br />
         </div>
         <Button component={Link} to="/" variant="outlined" type="button">
           Back to Home
