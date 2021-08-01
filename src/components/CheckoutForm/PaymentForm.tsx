@@ -12,7 +12,7 @@ import { ShippingData } from "../../types";
 import Review from "./Review";
 
 interface Props {
-  checkoutToken: CheckoutToken | null;
+  checkoutToken: CheckoutToken;
   shippingData: ShippingData;
   nextStep: () => void;
   backStep: () => void;
@@ -52,7 +52,7 @@ const PaymentForm: FC<Props> = ({
       if (error) {
         console.log(error);
       } else {
-        const orderData: CheckoutCapture = {
+        const orderData: any = {
           line_items: checkoutToken.live.line_items,
           customer: {
             firstname: shippingData.firstName,
@@ -74,7 +74,6 @@ const PaymentForm: FC<Props> = ({
             gateway: "stripe",
             stripe: {
               payment_method_id: paymentMethod!.id,
-              payment_intent_id: "",
             },
           },
         };

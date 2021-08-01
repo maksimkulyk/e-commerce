@@ -1,4 +1,4 @@
-import { LineItem } from "@chec/commerce.js/types/line-item";
+import { FC } from "react";
 import {
   Button,
   Card,
@@ -7,8 +7,7 @@ import {
   CardMedia,
   Typography,
 } from "@material-ui/core";
-import { FC } from "react";
-
+import { LineItem } from "@chec/commerce.js/types/line-item";
 import useStyles from "./cartItemStyles";
 
 interface Props {

@@ -4,8 +4,8 @@ import { commerce } from "./lib/commerce";
 import { Cart as ICart } from "@chec/commerce.js/types/cart";
 import { Product } from "@chec/commerce.js/types/product";
 import { Cart, Checkout, Navbar, Products } from "./components";
-import { CheckoutCapture } from "@chec/commerce.js/types/checkout-capture";
 import { CheckoutCaptureResponse } from "@chec/commerce.js/types/checkout-capture-response";
+import { CheckoutCapture } from "@chec/commerce.js/types/checkout-capture";
 
 const App = () => {
   const [products, setProducts] = useState<Product[]>([]);

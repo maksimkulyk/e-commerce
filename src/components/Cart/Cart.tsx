@@ -1,3 +1,5 @@
+import { FC } from "react";
+import { Link } from "react-router-dom";
 import { Cart as ICart } from "@chec/commerce.js/types/cart";
 import {
   Button,
@@ -6,10 +8,7 @@ import {
   Typography,
   CircularProgress,
 } from "@material-ui/core";
-import { FC } from "react";
-import { Link } from "react-router-dom";
 import CartItem from "./CartItem/CartItem";
-
 import useStyles from "./cartStyles";
 
 interface Props {

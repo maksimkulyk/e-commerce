@@ -1,4 +1,5 @@
 import { FC, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { FormProvider, useForm } from "react-hook-form";
 import FormInput from "./CustomFormInput";
 import { commerce } from "../../lib/commerce";
@@ -10,17 +11,15 @@ import {
   Select,
   Typography,
 } from "@material-ui/core";
-import { CheckoutToken } from "@chec/commerce.js/types/checkout-token";
 import { GetShippingOptionsResponse } from "@chec/commerce.js/features/checkout";
 import { SelectOptions, ShippingData } from "../../types";
-import { Link } from "react-router-dom";
 
 interface Props {
-  checkoutToken: CheckoutToken | null;
+  checkoutTokenId: string;
   next: (data: ShippingData) => void;
 }
 
-const AddressForm: FC<Props> = ({ checkoutToken, next }) => {
+const AddressForm: FC<Props> = ({ checkoutTokenId, next }) => {
   const [shippingCountries, setShippingCountries] = useState<SelectOptions[]>(
     []
   );
@@ -33,16 +32,19 @@ const AddressForm: FC<Props> = ({ checkoutToken, next }) => {
   const [shippingOption, setShippingOption] = useState("");
   const methods = useForm();
 
+  const getDataArray = (dataObject: { [name: string]: string }) => {
+    return Object.entries(dataObject).map(([code, name]) => ({
+      id: code,
+      label: name,
+    }));
+  };
+
   const fetchShippingCountries = async (checkoutTokenId: string) => {
     const { countries } = await commerce.services.localeListShippingCountries(
       checkoutTokenId
     );
-    const countriesArr = Object.entries(countries).map(([code, name]) => ({
-      id: code,
-      label: name,
-    }));
 
-    setShippingCountries(countriesArr);
+    setShippingCountries(getDataArray(countries));
     setShippingCountry(Object.keys(countries)[0]);
   };
 
@@ -51,14 +53,7 @@ const AddressForm: FC<Props> = ({ checkoutToken, next }) => {
       countryCode
     );
 
-    const subdivisionsArr = Object.entries(subdivisions).map(
-      ([code, name]) => ({
-        id: code,
-        label: name,
-      })
-    );
-
-    setShippingSubdivisions(subdivisionsArr);
+    setShippingSubdivisions(getDataArray(subdivisions));
     setShippingSubdivision(Object.keys(subdivisions)[0]);
   };
 
@@ -84,17 +79,20 @@ const AddressForm: FC<Props> = ({ checkoutToken, next }) => {
   };
 
   useEffect(() => {
-    if (checkoutToken) fetchShippingCountries(checkoutToken.id);
-  }, [checkoutToken]);
+    if (checkoutTokenId) fetchShippingCountries(checkoutTokenId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkoutTokenId]);
 
   useEffect(() => {
     if (shippingCountry) fetchSubdivisions(shippingCountry);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shippingCountry]);
 
   useEffect(() => {
-    if (checkoutToken && shippingSubdivision)
-      fetchOptions(checkoutToken.id, shippingCountry, shippingSubdivision);
-  }, [checkoutToken, shippingCountry, shippingSubdivision]);
+    if (checkoutTokenId && shippingSubdivision)
+      fetchOptions(checkoutTokenId, shippingCountry, shippingSubdivision);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shippingSubdivision]);
 
   return (
     <>
@@ -122,6 +120,7 @@ const AddressForm: FC<Props> = ({ checkoutToken, next }) => {
             <Grid item xs={12} sm={6}>
               <InputLabel>Shipping Country</InputLabel>
               <Select
+                defaultValue=""
                 value={shippingCountry}
                 fullWidth
                 onChange={(event) =>
@@ -138,6 +137,7 @@ const AddressForm: FC<Props> = ({ checkoutToken, next }) => {
             <Grid item xs={12} sm={6}>
               <InputLabel>Shipping Subdivision</InputLabel>
               <Select
+                defaultValue=""
                 value={shippingSubdivision}
                 fullWidth
                 onChange={(event) =>
@@ -154,6 +154,7 @@ const AddressForm: FC<Props> = ({ checkoutToken, next }) => {
             <Grid item xs={12} sm={6}>
               <InputLabel>Shipping Option</InputLabel>
               <Select
+                defaultValue=""
                 value={shippingOption}
                 fullWidth
                 onChange={(event) =>
