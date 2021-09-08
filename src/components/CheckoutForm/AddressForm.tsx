@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { GetShippingOptionsResponse } from "@chec/commerce.js/features/checkout";
-import { SelectOptions, ShippingData } from "../../types";
+import { SelectOptions, ShippingData } from "../../types.dt";
 
 interface Props {
   checkoutTokenId: string;
@@ -63,11 +63,13 @@ const AddressForm: FC<Props> = ({ checkoutTokenId, next }) => {
     region: string | undefined
   ) => {
     //@ts-ignore
-    const options: GetShippingOptionsResponse[] =
-      await commerce.checkout.getShippingOptions(checkoutTokenId, {
+    const options: GetShippingOptionsResponse[] = await commerce.checkout.getShippingOptions(
+      checkoutTokenId,
+      {
         country,
         region,
-      });
+      }
+    );
 
     const optionsArr = options.map((option) => ({
       id: option.id,

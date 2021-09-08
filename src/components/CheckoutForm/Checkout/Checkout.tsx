@@ -16,13 +16,13 @@ import PaymentForm from "../PaymentForm";
 import { commerce } from "../../../lib/commerce";
 import { Cart as ICart } from "@chec/commerce.js/types/cart";
 import { CheckoutToken } from "@chec/commerce.js/types/checkout-token";
-import { ShippingData } from "../../../types";
+import { ShippingData } from "../../../types.dt";
 import { CheckoutCaptureResponse } from "@chec/commerce.js/types/checkout-capture-response";
 import { CheckoutCapture } from "@chec/commerce.js/types/checkout-capture";
 import useStyles from "../checkoutStyles";
+import { useGetCartQuery } from "../../../services/cart";
 
 interface Props {
-  cart: ICart;
   order: CheckoutCaptureResponse;
   error: string;
   onCaptureCheckout: (checkoutToken: string, newOrder: CheckoutCapture) => void;
@@ -30,7 +30,7 @@ interface Props {
 
 const steps = ["Shipping address", "Payment Details"];
 
-const Checkout: FC<Props> = ({ cart, order, onCaptureCheckout, error }) => {
+const Checkout: FC<Props> = ({ order, onCaptureCheckout, error }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [shippingData, setShippingData] = useState<ShippingData>({});
   const [checkoutToken, setCheckoutToken] = useState<CheckoutToken>(
@@ -39,22 +39,25 @@ const Checkout: FC<Props> = ({ cart, order, onCaptureCheckout, error }) => {
   const [isFinished, setIsFinished] = useState(false);
   const classes = useStyles();
 
+  const { data: cart, isLoading } = useGetCartQuery(null);
+
   useEffect(() => {
     const generateToken = async () => {
       try {
-        const token = await commerce.checkout.generateToken(cart.id, {
-          type: "cart",
-        });
-
-        setCheckoutToken(token);
+        if (cart) {
+          const token = await commerce.checkout.generateToken(cart.id, {
+            type: "cart",
+          });
+          setCheckoutToken(token);
+        }
       } catch (error) {
         console.log(error);
       }
     };
 
-    if (cart.id && cart.total_items) generateToken();
+    if (cart && cart.id && cart.total_items) generateToken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cart.id]);
+  }, [cart?.id]);
 
   const nextStep = () => setActiveStep((prevActiveStep) => prevActiveStep + 1);
   const backStep = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);

@@ -11,6 +11,7 @@ import useStyles from "./navbarStyles";
 import logo from "../../assets/commerce-logo.png";
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { Routes } from "../../types.dt";
 
 interface Props {
   totalItems: number | undefined;
@@ -40,6 +41,7 @@ const Navbar: FC<Props> = ({ totalItems }) => {
             E-commerce
           </Typography>
           <div className={classes.grow} />
+          <Link to={Routes.SHOP_PAGE}>Shop</Link>
           {location.pathname === "/" && (
             <div>
               <IconButton

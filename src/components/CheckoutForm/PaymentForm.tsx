@@ -8,7 +8,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { loadStripe, Stripe, StripeElements } from "@stripe/stripe-js";
 import { FC } from "react";
-import { ShippingData } from "../../types";
+import { ShippingData } from "../../types.dt";
 import Review from "./Review";
 
 interface Props {
