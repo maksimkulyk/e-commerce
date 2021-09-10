@@ -12,14 +12,14 @@ import logo from "../../assets/commerce-logo.png";
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Routes } from "../../types.dt";
+import { useGetCartQuery } from "../../services/cart";
 
-interface Props {
-  totalItems: number | undefined;
-}
+interface Props {}
 
-const Navbar: FC<Props> = ({ totalItems }) => {
+const Navbar: FC<Props> = () => {
   const classes = useStyles();
   const location = useLocation();
+  const { data: cart } = useGetCartQuery();
 
   return (
     <>
@@ -42,20 +42,20 @@ const Navbar: FC<Props> = ({ totalItems }) => {
           </Typography>
           <div className={classes.grow} />
           <Link to={Routes.SHOP_PAGE}>Shop</Link>
-          {location.pathname === "/" && (
-            <div>
-              <IconButton
-                component={Link}
-                to="/cart"
-                aria-label="Show cart items"
-                color="inherit"
-              >
-                <Badge badgeContent={totalItems} color="secondary">
-                  <ShoppingCart />
-                </Badge>
-              </IconButton>
-            </div>
-          )}
+          {/*{location.pathname === "/" && (*/}
+          <div>
+            <IconButton
+              component={Link}
+              to={Routes.CART_PAGE}
+              aria-label="Show cart items"
+              color="inherit"
+            >
+              <Badge badgeContent={cart?.total_items} color="secondary">
+                <ShoppingCart />
+              </Badge>
+            </IconButton>
+          </div>
+          {/*)}*/}
         </Toolbar>
       </AppBar>
     </>

@@ -2,12 +2,13 @@ import { FC, useEffect, useState } from "react";
 import { Cart } from "../components";
 import { commerce } from "../lib/commerce";
 import { Cart as ICart } from "@chec/commerce.js/types/cart";
+import { useGetCartQuery } from "../services/cart";
 
 interface CartPageProps {}
 
 const CartPage: FC<CartPageProps> = () => {
   const [cart, setCart] = useState<ICart>({} as ICart);
-  console.log(cart);
+  // const { data: cart, error, isLoading } = useGetCartQuery();
 
   const fetchCart = async () => {
     const cart = await commerce.cart.retrieve();
@@ -37,12 +38,16 @@ const CartPage: FC<CartPageProps> = () => {
   }, []);
 
   return (
-    <Cart
-      cart={cart}
-      handleUpdateCartQuantity={handleUpdateCartQuantity}
-      handleRemoveFromCart={handleRemoveFromCart}
-      handleEmptyCart={handleEmptyCart}
-    />
+    <>
+      {cart && (
+        <Cart
+          cart={cart}
+          handleUpdateCartQuantity={handleUpdateCartQuantity}
+          handleRemoveFromCart={handleRemoveFromCart}
+          handleEmptyCart={handleEmptyCart}
+        />
+      )}
+    </>
   );
 };
 

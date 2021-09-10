@@ -1,15 +1,12 @@
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { Navbar } from "./components";
 import { appRoutes } from "./routes/appRoutes";
-import { ShopPage } from "./pages";
-import { Routes } from "./types.dt";
+import { useGetCartQuery } from "./services/cart";
 
 const App = () => {
-  console.log(appRoutes);
   return (
     <BrowserRouter>
-      {/*<Navbar totalItems={cart.total_items} />*/}
-      <Navbar totalItems={4} />
+      <Navbar />
       <Switch>
         {appRoutes.map((route) => (
           <Route

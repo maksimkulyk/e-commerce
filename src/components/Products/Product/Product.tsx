@@ -10,15 +10,30 @@ import {
 import { AddShoppingCart } from "@material-ui/icons";
 import useStyles from "./productStyles";
 import { Product as IProduct } from "@chec/commerce.js/types/product";
+import {
+  useAddItemToCartMutation,
+  useGetCartQuery,
+} from "../../../services/cart";
 
 interface Props {
   product: IProduct;
-  onAddToCart: (productId: string, quantity: number) => void;
 }
 
-const Product: FC<Props> = ({ product, onAddToCart }) => {
+const Product: FC<Props> = ({ product }) => {
   const classes = useStyles();
   const { id, name, description, price, media } = product;
+
+  const [addToCart, { isLoading: isUpdating }] = useAddItemToCartMutation();
+
+  const onAddToCart = () => {
+    console.log("CLICKED add to cart");
+
+    addToCart({
+      cartId: "cart_roED7ZjK12OOXw",
+      itemId: id,
+      quantity: 1,
+    });
+  };
 
   return (
     <Card className={classes.root}>
@@ -37,7 +52,7 @@ const Product: FC<Props> = ({ product, onAddToCart }) => {
         />
       </CardContent>
       <CardActions disableSpacing className={classes.cardActions}>
-        <IconButton aria-label="Add to Cart" onClick={() => onAddToCart(id, 1)}>
+        <IconButton aria-label="Add to Cart" onClick={onAddToCart}>
           <AddShoppingCart />
         </IconButton>
       </CardActions>

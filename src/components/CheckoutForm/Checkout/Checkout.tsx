@@ -39,7 +39,7 @@ const Checkout: FC<Props> = ({ order, onCaptureCheckout, error }) => {
   const [isFinished, setIsFinished] = useState(false);
   const classes = useStyles();
 
-  const { data: cart, isLoading } = useGetCartQuery(null);
+  const { data: cart, isLoading } = useGetCartQuery();
 
   useEffect(() => {
     const generateToken = async () => {

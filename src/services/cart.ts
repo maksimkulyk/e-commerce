@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { Cart as ICart } from "@chec/commerce.js/types/cart";
-import { productsApi } from "./products";
 
 export const cartApi = createApi({
   reducerPath: "cartApi",
@@ -13,17 +12,28 @@ export const cartApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    getCart: builder.query<ICart, null>({
+    getCart: builder.query<ICart, void>({
       query: () => `/carts`,
     }),
     updateCartItem: builder.mutation({
-      query: ({ cartId, itemId, put }) => ({
-        url: `https://api.chec.io/v1/carts/${cartId}/items/${itemId}`,
+      query: ({ cartId, itemId, options }) => ({
+        url: `/carts/${cartId}/items/${itemId}`,
         method: "PUT",
-        body: put,
+        body: options,
+      }),
+    }),
+    addItemToCart: builder.mutation({
+      query: ({ cartId, itemId, quantity }) => ({
+        url: `/carts/${cartId}`,
+        method: "POST",
+        body: { id: itemId, quantity: quantity },
       }),
     }),
   }),
 });
 
-export const { useGetCartQuery, useUpdateCartItemMutation } = cartApi;
+export const {
+  useGetCartQuery,
+  useUpdateCartItemMutation,
+  useAddItemToCartMutation,
+} = cartApi;
